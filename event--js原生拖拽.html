@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>js原生拖拽</title>
+    <style type="text/css">
+        *{margin: 0;padding: 0}
+        #drag{
+            position: absolute;
+            top: 100px;
+            left:200px;
+            width: 60px;height: 60px;
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="drag"></div>
+</body>
+<script type="text/javascript">
+var drag=document.getElementById('drag');
+var click1=document.getElementById('click');
+var can=document.getElementById('can');
+var addEvent=function(el,event,cb){
+  if (el.addEventListener) {
+        el.addEventListener(event,cb);
+  }else if(el.attachEvent){
+      el.attachEvent(event,cb);
+  }
+  return cb;
+}
+var cancelEvent=function(el,event,cb){
+   if (el.removeEventListener) {
+          el.removeEventListener(event,cb);
+   }else if(el.detachEvent){
+           el.detachEvent('on'+event,cb)
+   }
+}                         
+function getPosition(e){
+     e=e||window.event;
+    var target=e.target?e.target:e.srcElement;
+   
+    var pos_rel={};
+    var pos_offset={};
+    pos_rel={
+        x:e.pageX?e.pageX:e.clientX+(document.body.scrollLeft||document.documentElement.scrollLeft),
+        y:e.pageY?e.pageY:e.clientY+(document.body.scrollTop||document.documentElement.scrollTop)
+    }
+    pos_offset={
+        x:e.offsetX?e.offsetX:e.layerX,
+        x:e.offsetY?e.offsetY:e.layerY
+    }
+   return {
+         rel:pos_rel,
+         offset:pos_offset
+   }
+}
+var isDrag=false;var ofx,ofy;
+var mousedownH=addEvent(drag,"mousedown",function(e){
+    isDrag=true;
+    ofx=getPosition().offset.x;
+    ofy=getPosition().offset.y;
+})
+var mousemoveH=addEvent(document,"mousemove",function(e){
+     if(isDrag) {
+       var relX=getPosition().rel.x-ofx;
+       var relY=getPosition().rel.y-ofx;
+       drag.style.left=relX+"px";
+       drag.style.top=relY+"px";
+   };
+})
+var mouseupH=addEvent(document,"mouseup",function(e){
+    isDrag=false;
+})
+</script>
+</html>
